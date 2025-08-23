@@ -1,12 +1,12 @@
 import express from 'express'; 
-import { PrismaClient } from './generated/prisma'
+import { PrismaClient } from './generated/prisma/index.js';
 
-const prisma = new PrismaClient()
+
+const prisma = new PrismaClient();
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
 
-const users = []
 
 app.post('/users', async (req, res) => {
 
@@ -20,7 +20,9 @@ app.post('/users', async (req, res) => {
     res.status(201).json(req.body)
 })
 
-app.get('/users', (req, res) => {
+app.get('/users', async (req, res) => {
+    
+    const users = await prisma.user.findMany()
     res.status(200).json(users )
 })
 
@@ -30,6 +32,7 @@ app.get('/users', (req, res) => {
 
 
 app.listen(3000)
+console.log('Server running on http://localhost:3000');
 
 //Criação do banco de dados Mongo DB
 //site: https://cloud.mongodb.com/v2/68a5d745bc7d6844d9ad98c5#/overview?automateSecurity=true
